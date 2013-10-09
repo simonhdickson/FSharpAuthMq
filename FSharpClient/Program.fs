@@ -21,11 +21,11 @@ let main argv =
     use context = ZmqContext.Create()
     for i in 1..100  do
         async {
+            let authorizationRequest =
+                context
+                |> Zmq.requester "tcp://localhost:5556"
+                |> Client.sendRequest
             for (name,id) in  [|("Bob",1); ("Bob",2); ("Alice",1)|] do
-                let authorizationRequest =
-                    context
-                    |> Zmq.requester "tcp://localhost:5556"
-                    |> Client.sendRequest
                 let! isAuthorized =
                     authorizationRequest (sprintf "%s,%i" name id)
                 printfn "%s is authorized for %i %s" name id isAuthorized
