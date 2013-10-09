@@ -1,4 +1,5 @@
 ﻿open System
+open System.Threading
 open System.Text
 open ZeroMQ
 
@@ -17,17 +18,18 @@ module Client =
 
 [<EntryPoint>]
 let main argv = 
-    let authorizationRequest =
-        ZmqContext.Create()
-        |> Zmq.requester "tcp://localhost:5556"
-        |> Client.sendRequest
-
-    async {
-        for (name,id) in  [|("Bob",1); ("Bob",2); ("Alice",1)|] do
-            let request = sprintf "%s,%i" name id
-            let! isAuthorized = authorizationRequest request
-            printfn "%s is authorized for id %i: %s" name id isAuthorized
-    } |> Async.Start
+    use context = ZmqContext.Create()
+    for i in 1..100  do
+        async {
+            for (name,id) in  [|("Bob",1); ("Bob",2); ("Alice",1)|] do
+                let authorizationRequest =
+                    context
+                    |> Zmq.requester "tcp://localhost:5556"
+                    |> Client.sendRequest
+                let! isAuthorized =
+                    authorizationRequest (sprintf "%s,%i" name id)
+                printfn "%s is authorized for %i %s" name id isAuthorized
+        } |> Async.Start
 
     Console.ReadLine() |> ignore
     0
