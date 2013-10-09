@@ -16,19 +16,25 @@ module Client =
             return requestSocket.Receive Encoding.UTF8
         }
 
+let requests =
+    [|("Bob",1); ("Bob",2); ("Alice",1)|]
+
 [<EntryPoint>]
 let main argv = 
+    Thread.Sleep 5000
     use context = ZmqContext.Create()
-    for i in 1..100  do
+    for i in 1..30  do
         async {
             let authorizationRequest =
                 context
                 |> Zmq.requester "tcp://localhost:5556"
                 |> Client.sendRequest
-            for (name,id) in  [|("Bob",1); ("Bob",2); ("Alice",1)|] do
-                let! isAuthorized =
-                    authorizationRequest (sprintf "%s,%i" name id)
-                printfn "%s is authorized for %i %s" name id isAuthorized
+            for j in 1..1000  do
+                for (name,id) in requests do
+                    let! isAuthorized =
+                        authorizationRequest (sprintf "%s,%i" name id)
+                    printfn "%s is authorized for %i %s" name id isAuthorized
+                Thread.Sleep 5000
         } |> Async.Start
 
     Console.ReadLine() |> ignore

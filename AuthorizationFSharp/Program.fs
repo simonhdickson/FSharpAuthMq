@@ -63,7 +63,7 @@ let main argv =
     |> Server.startRouter
     |> Async.Start
    
-    for i in 1 .. 5 do
+    for i in 1 .. 10 do
         context
         |> Zmq.dealer "inproc://backend"
         |> Server.createWorker isAuthorized
