@@ -10,32 +10,61 @@ module Zmq =
         requester
 
 module Client =
-    let sendRequest (requestSocket:ZmqSocket) request =
+    type Response =
+    | Timeout
+    | Ok of string
+
+    let sendRequest timeout (requestSocket:ZmqSocket) request =
         async {
             requestSocket.Send(request, Encoding.UTF8) |> ignore
-            return requestSocket.Receive Encoding.UTF8
+            let response =
+                requestSocket.Receive(Encoding.UTF8, TimeSpan.FromSeconds(timeout))
+            if (response = null) then
+                return Timeout
+            else
+                return Ok(response)
         }
 
+open Client
+
 let requests =
-    [|("Bob",1); ("Bob",2); ("Alice",1)|]
+    [("Bob",1); ("Bob",2); ("Alice",1)]
+
+let rec requestLoop tries authorizationRequest name id =
+    async {
+        if tries = 0 then
+            return Timeout
+        else
+            let! isAuthorized =
+                authorizationRequest() (sprintf "%s,%i" name id)
+            match isAuthorized with
+            | Ok(result) ->
+                return Ok(result)
+            | Timeout ->
+                return! requestLoop (tries-1) authorizationRequest name id
+    }
 
 [<EntryPoint>]
 let main argv = 
     Thread.Sleep 5000
     use context = ZmqContext.Create()
-    for i in 1..30  do
-        async {
-            let authorizationRequest =
-                context
-                |> Zmq.requester "tcp://localhost:5556"
-                |> Client.sendRequest
-            for j in 1..1000  do
-                for (name,id) in requests do
-                    let! isAuthorized =
-                        authorizationRequest (sprintf "%s,%i" name id)
-                    printfn "%s is authorized for %i %s" name id isAuthorized
-                Thread.Sleep 5000
-        } |> Async.Start
+    while true do
+        for i in 1..4 do
+            async {
+                let authorizationRequest() =
+                    context
+                    |> Zmq.requester "tcp://localhost:5556"
+                    |> Client.sendRequest 2.5
+                for j in 1..1000  do
+                    for (name,id) in requests do
+                        let! response = requestLoop 3 authorizationRequest name id
+                        match response with
+                        | Ok(result) ->
+                            printfn "%s requested %i, allowed: %s" name id result
+                        | Timeout ->
+                            printfn "Timeout"
+                        Thread.Sleep 10000
+            } |> Async.Start
 
     Console.ReadLine() |> ignore
     0
