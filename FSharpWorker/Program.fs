@@ -88,16 +88,10 @@ let main argv =
     use context = ZmqContext.Create()
     let heartbeat = 5.0
     
-    for i in 1..2 do
+    for i in 1..20 do
         context
         |> Zmq.worker "tcp://localhost:5557"
         |> Worker.start isAuthorized heartbeat
-        |> Async.Start
-
-    for i in 1..2 do
-        context
-        |> Zmq.worker "tcp://localhost:5557"
-        |> Worker.start isAuthorizedSlow heartbeat
         |> Async.Start
 
     Console.ReadLine() |> ignore
