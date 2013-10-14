@@ -1,6 +1,7 @@
 ﻿open System
 open System.Text
 open ZeroMQ
+open Newtonsoft.Json
 
 module Zmq =
     let requester addresss (zmqContext:ZmqContext) =
@@ -16,7 +17,9 @@ module Client =
         }
 
 [<EntryPoint>]
-let main argv = 
+let main argv =
+    use context = ZmqContext.Create()
+
     let authorizationRequest =
         ZmqContext.Create()
         |> Zmq.requester "tcp://localhost:5556"
@@ -24,7 +27,7 @@ let main argv =
 
     async {
         for (name,id) in  [|("Bob",1); ("Bob",2); ("Alice",1)|] do
-            let request = sprintf "%s,%i" name id
+            let request = sprintf "{name:\"%s\",id:%i}" name id
             let! isAuthorized = authorizationRequest request
             printfn "%s is authorized for id %i: %s" name id isAuthorized
     } |> Async.Start

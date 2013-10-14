@@ -1,38 +1,27 @@
 ﻿open System
 open System.Text
 open ZeroMQ
+open Server
 
-module Zmq =
-    let responder addresss (zmqContext:ZmqContext) =
-        let responder = zmqContext.CreateSocket SocketType.REP
-        responder.Bind addresss
-        responder
+module AuthorizationService =
+    type Request = { name:string; id:int }
 
-module Server =
-    let start requestProcessor (recieveSocket:ZmqSocket) =
+    let isAuthorized request =
         async {
-            while true do
-                let request = recieveSocket.Receive Encoding.UTF8
-                let! response = requestProcessor request
-                recieveSocket.Send(response, Encoding.UTF8) |> ignore
+            if request.name = "Bob" && request.id = 1 then
+                return true
+            else
+                return false
         }
-
-let isAuthorized (message:string) =
-    async {
-        printfn "Recieved message: %s" message
-        let x = message.Split ','
-        if x.[0] = "Bob" && x.[1] = "1" then
-            return true.ToString()
-        else
-            return false.ToString()
-    }
 
 [<EntryPoint>]
 let main argv =
     ZmqContext.Create()
     |> Zmq.responder "tcp://*:5556"
-    |> Server.start isAuthorized
+    |> Server.start (Json.convertFrom [||]) (Json.convertTo [||]) AuthorizationService.isAuthorized
     |> Async.Start
+    
+    Console.WriteLine(ZmqVersion.Current.ToString()) |> ignore
 
     Console.ReadLine() |> ignore
     0
