@@ -9,8 +9,5 @@ module Authentication =
 
     let isAuthorized command =
         async {
-            if command.username = "Bob" && command.password = "letmein" then
-                return true
-            else
-                return false
+            return command.username = "jbloggs" && command.password = "letmein"
         }

@@ -69,6 +69,11 @@
       <Project>{cfaeb917-f77c-4071-a379-92a966f11297}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\ServiceHost\ServiceHost.fsproj">
+      <Name>ServiceHost</Name>
+      <Project>{3fd4d3a1-e45c-4fe3-b943-70ecf8cef7ba}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Zmq.Common\Zmq.Common.fsproj">
       <Name>Zmq.Common</Name>
       <Project>{83f96997-e5e6-4b00-857d-35f7a22e38a2}</Project>

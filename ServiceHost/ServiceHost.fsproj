@@ -8,7 +8,7 @@
     <ProjectGuid>3fd4d3a1-e45c-4fe3-b943-70ecf8cef7ba</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>ZeroMQ.Server</RootNamespace>
-    <AssemblyName>ZeroMQ.Server</AssemblyName>
+    <AssemblyName>ServiceHost</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <Name>ZeroMQ.Server</Name>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>

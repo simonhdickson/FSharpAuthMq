@@ -15,7 +15,7 @@ module SmokeTests =
 
         Given ("jbloggs", "letmein")
         |> When ``we authenticate``
-        |> It should equal Result.Timeout
+        |> It should equal (Result.Success true)
         |> Verify
 
     [<Scenario>]
