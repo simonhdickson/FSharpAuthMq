@@ -54,6 +54,11 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\samples\Client.Authentication\Client.Authentication.fsproj">
+      <Name>Client.Authentication</Name>
+      <Project>{cfaeb917-f77c-4071-a379-92a966f11297}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Serializer.Json\Serializer.Json.fsproj">
       <Name>Serializer.Json</Name>
       <Project>{202cf67b-ee51-4f4a-9c0d-146aa2a176bf}</Project>

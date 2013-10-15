@@ -9,7 +9,7 @@ module Authentication =
 
     type Revoke = { username:string }
 
-    let isAuthorized (command:Authenticate) =
+    let authenticate (command:Authenticate) =
         async {
             return command.username = "jbloggs" && command.password = "letmein"
         }
