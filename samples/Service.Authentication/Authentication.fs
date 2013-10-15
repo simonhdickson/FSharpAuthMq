@@ -7,7 +7,14 @@ open System.Text
 module Authentication =
     type Authenticate = { username:string; password:string }
 
-    let isAuthorized command =
+    type Revoke = { username:string }
+
+    let isAuthorized (command:Authenticate) =
         async {
             return command.username = "jbloggs" && command.password = "letmein"
+        }
+
+    let revoke command =
+        async {
+            return command.username = "jbloggs"
         }

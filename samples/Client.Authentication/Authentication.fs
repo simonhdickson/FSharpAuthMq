@@ -11,12 +11,21 @@ open Zmq.RequestResponse
 module Authentication =
     type Authenticate = { username:string; password:string }
 
-    let authenticate (context:ZmqContext) username password : Result<'a> =
+    type RevokeUser = { username:string }
+
+    let private execute context record =
         let timeout = TimeSpan.FromSeconds(2.0)
-        use socket = Zmq.RequestResponse.requester "tcp://localhost:5556" context
+        use socket = Zmq.RequestResponse.requester "tcp://localhost:5557" context
         socket.Linger <- timeout // linger timeout is important because during dispose of ZmqContext it will insist on clearing its output queues.
+        Zmq.RequestResponse.execute
+            (serialize[||])
+            (deserialize [||])
+            socket
+            record
+            timeout
 
-        let authenticationRequest = Zmq.RequestResponse.sendRequest (serialize [||]) (deserialize [||]) socket
+    let authenticate (context:ZmqContext) username password =
+        execute context { username=username; password=password; }
 
-        let isAuthorized = authenticationRequest { username=username; password=password; } timeout
-        isAuthorized
+    let revokeUser (context:ZmqContext) username =
+        execute context { username=username }

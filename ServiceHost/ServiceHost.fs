@@ -6,18 +6,30 @@ open ZeroMQ
 open Serializer.Json
 
 module ServiceHost =
-    let private start serialize deserialize requestProcessor (receiveSocket:ZmqSocket) =
+    let private handlingPipeline = Service.Authentication.isAuthorized
+
+    let private routeMessages (routerFrom:ZmqSocket) (routerTo:ZmqSocket) _ =
+        let message = routerFrom.ReceiveMessage()
+        let frame = message.Unwrap ()
+        routerTo.SendMessage(message) |> ignore
+
+    let private routeBack (routerFrom:ZmqSocket) (routerTo:ZmqSocket) _ =
+        let message = routerFrom.ReceiveMessage()
+        routerTo.SendMessage(message) |> ignore
+
+    let private start serialize deserialize ((backSocket, frontSocket):ZmqSocket*ZmqSocket) =
         async {
+            frontSocket.ReceiveReady.Add (routeMessages frontSocket backSocket)
+            backSocket.ReceiveReady.Add (routeBack backSocket frontSocket)
+            let poller = new Poller([|frontSocket; backSocket|])
             while true do
-                let request = receiveSocket.Receive Encoding.UTF8 |> deserialize
-                let! response = requestProcessor request
-                receiveSocket.Send(response |> serialize, Encoding.UTF8) |> ignore
+                poller.Poll() |> ignore
         }
 
     let initialize () =
         ZmqContext.Create()
-        |> Zmq.RequestResponse.responder "tcp://*:5556"
-        |> start (serialize [||]) (deserialize [||]) Service.Authentication.isAuthorized
+        |> Zmq.Router.router "tcp://*:5556" "tcp://*:5557"
+        |> start (serialize [||]) (deserialize [||])
         |> Async.Start
 
     [<EntryPoint>]
