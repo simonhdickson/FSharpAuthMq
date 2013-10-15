@@ -4,6 +4,11 @@ open ZeroMQ
 open System.Text
 
 module RequestResponse =
+    type Result<'a> =
+        | Success of 'a
+        | Timeout
+        | Failure
+
     let requester address (zmqContext:ZmqContext) =
         let requester = zmqContext.CreateSocket SocketType.REQ
         requester.Connect address
@@ -14,9 +19,11 @@ module RequestResponse =
         responder.Bind address
         responder
 
-    let sendRequest serializer deserializer (requestSocket:ZmqSocket) request =
+    let sendRequest serializer deserializer (requestSocket:ZmqSocket) request timeout =
         let serializedRequest = serializer request
         requestSocket.Send(serializedRequest, Encoding.UTF8) |> ignore
-        let reply = requestSocket.Receive Encoding.UTF8
-        let deserializedReply = deserializer reply
-        deserializedReply
+        let reply = requestSocket.Receive(Encoding.UTF8, timeout)
+        if reply <> null then
+            Success (deserializer reply)
+        else
+            Timeout

@@ -42,7 +42,7 @@
     <Compile Include="SmokeTests.fs" />
     <None Include="packages.config" />
     <None Include="app.config" />
-    <Compile Include="Sample.fs" />
+    <None Include="Sample.fs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="clrzmq">
@@ -67,6 +67,11 @@
     <ProjectReference Include="..\samples\Client.Authentication\Client.Authentication.fsproj">
       <Name>Client.Authentication</Name>
       <Project>{cfaeb917-f77c-4071-a379-92a966f11297}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Zmq.Common\Zmq.Common.fsproj">
+      <Name>Zmq.Common</Name>
+      <Project>{83f96997-e5e6-4b00-857d-35f7a22e38a2}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
