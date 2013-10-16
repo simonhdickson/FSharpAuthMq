@@ -81,7 +81,6 @@ module ServiceHost =
                 while true do
                     let message = socket.ReceiveMessage()
                     let request = Encoding.UTF8.GetString(message.Unwrap().Buffer)
-                    printfn "%s" request
                     let deserializedRequest = deserialize request
                     let! response = handlingPipeline ({ request=deserializedRequest; environment=Map.empty })
                     let (serializedResponse:string) =
