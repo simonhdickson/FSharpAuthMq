@@ -26,6 +26,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ClientHost", "ClientHost\Cl
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Client.Authentication.Tests", "Client.Authentication.Tests\Client.Authentication.Tests.fsproj", "{5F8E4927-C2B5-426E-B192-D5360B13188A}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ServiceHost.Pipeline", "ServiceHost.Pipeline\ServiceHost.Pipeline.fsproj", "{17C5BFCC-F4CF-46F3-BBFD-67F6E7BE35D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +62,10 @@ Global
 		{5F8E4927-C2B5-426E-B192-D5360B13188A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F8E4927-C2B5-426E-B192-D5360B13188A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F8E4927-C2B5-426E-B192-D5360B13188A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17C5BFCC-F4CF-46F3-BBFD-67F6E7BE35D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17C5BFCC-F4CF-46F3-BBFD-67F6E7BE35D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17C5BFCC-F4CF-46F3-BBFD-67F6E7BE35D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17C5BFCC-F4CF-46F3-BBFD-67F6E7BE35D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
