@@ -4,6 +4,7 @@ open System
 open System.Text
 open ZeroMQ
 open Newtonsoft.Json
+open Newtonsoft.Json.FSharp
 open Serializer.Json
 open Zmq.RequestResponse
 
@@ -12,20 +13,27 @@ module Authentication =
     type Authenticate = { username:string; password:string }
 
     type RevokeUser = { username:string }
+    
+    type Command =
+        | Authenticate of Authenticate
+        | Revoke of RevokeUser
 
-    let private execute context record =
+//    type Command' = { command:Command }
+
+    let private execute context command =
         let timeout = TimeSpan.FromSeconds(2.0)
         use socket = Zmq.RequestResponse.requester "tcp://localhost:5556" context
         socket.Linger <- timeout // linger timeout is important because during dispose of ZmqContext it will insist on clearing its output queues.
+        let converters : JsonConverter[] = [|UnionConverter<Command> ()|]
         Zmq.RequestResponse.execute
-            (serialize[||])
+            (serialize converters)
             (deserialize [||])
             socket
-            record
+            command
             timeout
 
     let authenticate (context:ZmqContext) username password =
-        execute context { username=username; password=password; }
+        execute context (Authenticate { username=username; password=password; })
 
     let revokeUser (context:ZmqContext) username =
-        execute context { username=username }
+        execute context (Revoke { username=username })

@@ -19,11 +19,12 @@ module SmokeTests =
         |> Verify
 
     [<Scenario>]
-    let ``given`` () =
-        let ``we`` () =
-            false
+    let ``chickens should not be allowed`` () =
+        let ``we authenticate`` (username, password) =
+            use context = ZmqContext.Create ()
+            authenticate context username password
 
-        Given ()
-        |> When ``we``
-        |> It should equal false
+        Given ("chicken", "squark!")
+        |> When ``we authenticate``
+        |> It should equal (Result.Success false)
         |> Verify

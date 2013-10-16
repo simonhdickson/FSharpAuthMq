@@ -4,9 +4,11 @@ open System
 open System.Collections.Generic
 open System.Text
 open ZeroMQ
-open Serializer.Json
 open ServiceHost.Pipeline
 open ServiceHost.Pipeline.PipelineExecution
+open Newtonsoft.Json
+open Newtonsoft.Json.FSharp
+open Serializer.Json
 
 module ServiceHost =
 //    let private routeMessages (routerFrom:ZmqSocket) (routerTo:ZmqSocket) (queue:Queue<Frame>) _ =
@@ -75,21 +77,29 @@ module ServiceHost =
 
     let private startService serialize deserialize (socket:ZmqSocket) =
         async {
-            while true do
-                let message = socket.ReceiveMessage()
-                let messageType = Encoding.UTF8.GetString(message.Unwrap().Buffer)
-                let request = Encoding.UTF8.GetString(message.Unwrap().Buffer)
-                let deserializedRequest = deserialize request
-                let! response = handlingPipeline deserializedRequest
-                let (serializedResponse:string) = serialize response
-                let responseMessage = new ZmqMessage ([|Encoding.UTF8.GetBytes(serializedResponse)|])
-                socket.SendMessage(responseMessage) |> ignore
+            try
+                while true do
+                    let message = socket.ReceiveMessage()
+                    let request = Encoding.UTF8.GetString(message.Unwrap().Buffer)
+                    printfn "%s" request
+                    let deserializedRequest = deserialize request
+                    let! response = handlingPipeline ({ request=deserializedRequest; environment=Map.empty })
+                    let (serializedResponse:string) =
+                        match response with
+                        | Handled s     -> serialize (s.environment.Item "result")
+                        | Continue s    -> "fail - no science"
+                        | Abort a       -> a.errorMessage
+                    let responseMessage = new ZmqMessage ([|Encoding.UTF8.GetBytes(serializedResponse)|])
+                    socket.SendMessage(responseMessage) |> ignore
+            with
+            | e -> printfn "%A" e
         }
 
     let initializeService (context:ZmqContext) =
+        let converters : JsonConverter[] = [|UnionConverter<Service.Authentication.Command> ()|]
         context
         |> Zmq.RequestResponse.responder "tcp://*:5556"
-        |> startService (serialize [||]) (deserialize [||])
+        |> startService (serialize [||]) (deserialize converters)
         |> Async.Start
 
     [<EntryPoint>]
