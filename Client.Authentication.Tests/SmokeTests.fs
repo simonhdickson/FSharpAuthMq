@@ -28,3 +28,25 @@ module SmokeTests =
         |> When ``we authenticate``
         |> It should equal (Result.Success false)
         |> Verify
+
+    [<Scenario>]
+    let ``given a valid user they are revoked`` () =
+        let ``we revoke`` username =
+            use context = ZmqContext.Create ()
+            revokeUser context username
+
+        Given "jbloggs"
+        |> When ``we revoke``
+        |> It should equal (Result.Success true)
+        |> Verify
+
+    [<Scenario>]
+    let ``given an invalid user revoke fails`` () =
+        let ``we revoke`` username =
+            use context = ZmqContext.Create ()
+            revokeUser context username
+
+        Given "arthur"
+        |> When ``we revoke``
+        |> It should equal (Result.Success false)
+        |> Verify
