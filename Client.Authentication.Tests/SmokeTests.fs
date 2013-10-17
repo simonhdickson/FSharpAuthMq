@@ -3,9 +3,14 @@
 open NUnit.Framework
 open NaturalSpec
 open Client.Authentication
+open ClientHost
 open ZeroMQ
 open Zmq.RequestResponse
 open Host
+open Serializer.Json
+open Newtonsoft.Json
+open Newtonsoft.Json.FSharp
+
 
 
 module SmokeTests =
@@ -15,10 +20,15 @@ module SmokeTests =
     let ``given a good user pass combo when authenticated then it succeeds`` () =
         let context = ZmqContext.Create ()
         
-        ServiceHost.initializeService context endpoint 
+        let killServiceFunction = ServiceHost.initializeService context endpoint 
+
+        let converters : JsonConverter[] = [|UnionConverter<Command> ()|]
+
+        let mailbox = ClientHost.createRequester (serialize converters) (deserialize [||]) (Some context) endpoint
+
 
         let ``we authenticate`` (username, password) =
-            authenticate context endpoint username password
+            ClientHost.send mailbox (Authenticate { username=username; password=password; })
 
         Given ("jbloggs", "letmein")
         |> When ``we authenticate``

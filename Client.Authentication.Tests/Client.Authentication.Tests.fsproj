@@ -55,6 +55,10 @@
       <HintPath>..\packages\NaturalSpec.1.4.17.1\lib\NaturalSpec.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
       <Private>True</Private>
@@ -64,9 +68,19 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ClientHost\ClientHost.fsproj">
+      <Name>ClientHost</Name>
+      <Project>{66c7161e-3109-4f28-b038-22429ba10be6}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\samples\Client.Authentication\Client.Authentication.fsproj">
       <Name>Client.Authentication</Name>
       <Project>{cfaeb917-f77c-4071-a379-92a966f11297}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Serializer.Json\Serializer.Json.fsproj">
+      <Name>Serializer.Json</Name>
+      <Project>{202cf67b-ee51-4f4a-9c0d-146aa2a176bf}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\ServiceHost\ServiceHost.fsproj">
