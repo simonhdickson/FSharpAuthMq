@@ -21,8 +21,7 @@ module RequestResponse =
 
     let execute (serializer:'a->string) deserializer (requestSocket:ZmqSocket) request timeout =
         let serializedRequest = serializer request
-        let message = new ZmqMessage ([|Encoding.UTF8.GetBytes serializedRequest|])
-        requestSocket.SendMessage(message) |> ignore
+        requestSocket.Send(serializedRequest, Encoding.UTF8) |> ignore
         let reply = requestSocket.Receive(Encoding.UTF8)
         if reply <> null then
             Success (deserializer reply)

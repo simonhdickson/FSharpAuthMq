@@ -20,9 +20,9 @@ module Authentication =
 
 //    type Command' = { command:Command }
 
-    let private execute context command =
+    let private execute context endpoint command =
         let timeout = TimeSpan.FromSeconds(2.0)
-        use socket = Zmq.RequestResponse.requester "tcp://localhost:5556" context
+        use socket = Zmq.RequestResponse.requester endpoint context
         socket.Linger <- timeout // linger timeout is important because during dispose of ZmqContext it will insist on clearing its output queues.
         let converters : JsonConverter[] = [|UnionConverter<Command> ()|]
         Zmq.RequestResponse.execute
@@ -32,8 +32,8 @@ module Authentication =
             command
             timeout
 
-    let authenticate (context:ZmqContext) username password =
-        execute context (Authenticate { username=username; password=password; })
+    let authenticate (context:ZmqContext) endpoint  username password =
+        execute context endpoint (Authenticate { username=username; password=password; })
 
-    let revokeUser (context:ZmqContext) username =
-        execute context (Revoke { username=username })
+    let revokeUser (context:ZmqContext) endpoint username =
+        execute context endpoint (Revoke { username=username })

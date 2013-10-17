@@ -6,7 +6,7 @@ open Zmq.RequestResponse
 [<EntryPoint>]
 let main argv =
     use context = ZmqContext.Create ()
-    let response = authenticate context "jbloggs" "letmein"
+    let response = authenticate context "tcp://5556" "jbloggs" "letmein"
     match response with
     | Success ok -> printfn "%b" ok
     | Timeout -> printfn "Need science yo"
