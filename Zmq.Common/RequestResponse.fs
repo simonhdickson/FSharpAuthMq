@@ -6,24 +6,10 @@ open System.Text
 module RequestResponse =
     type Result<'a> =
         | Success of 'a
-        | Timeout
         | Failure
-
-    let requester address (zmqContext:ZmqContext) =
-        let requester = zmqContext.CreateSocket SocketType.REQ
-        requester.Connect address
-        requester
 
     let responder address (zmqContext:ZmqContext) =
         let responder = zmqContext.CreateSocket SocketType.REP
         responder.Bind address
+        responder.Linger <- System.TimeSpan.FromSeconds 1.0
         responder
-
-    let execute (serializer:'a->string) deserializer (requestSocket:ZmqSocket) request timeout =
-        let serializedRequest = serializer request
-        requestSocket.Send(serializedRequest, Encoding.UTF8) |> ignore
-        let reply = requestSocket.Receive(Encoding.UTF8)
-        if reply <> null then
-            Success (deserializer reply)
-        else
-            Timeout

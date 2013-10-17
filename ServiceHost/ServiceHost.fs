@@ -6,53 +6,50 @@ open System.Text
 open ZeroMQ
 open ServiceHost.Pipeline
 open ServiceHost.Pipeline.PipelineExecution
+open Service.Authentication
 open Newtonsoft.Json
 open Newtonsoft.Json.FSharp
 open Serializer.Json
+open Zmq.RequestResponse
 
 module ServiceHost =
-
     let handlingPipeline pipelineState =
         async { return Continue pipelineState }
         |> bind Service.Authentication.authenticate
         |> bind Service.Authentication.revoke
 
-    let private startService serialize deserialize killGuid (socket:ZmqSocket) =
+    let rec private startService serialize deserialize killGuid (socket:ZmqSocket) =
         async {
             try
-                
-                while true do
-                    let request = socket.Receive Encoding.UTF8
-                    match request with 
-                    | _ when request = killGuid -> return ()    
-                    | null                      -> socket.Send("Empty Packet Received", Encoding.UTF8) |> ignore //something went wrong
-                    | _                         -> let deserializedRequest = deserialize request
-                                                   let! response = handlingPipeline ({ request=deserializedRequest; environment=Map.empty })
-                                                   let (serializedResponse:string) =
-                                                       match response with
-                                                       | Handled s     -> serialize (s.environment.Item "result")
-                                                       | Continue s    -> "fail - no science"
-                                                       | Abort a       -> a.errorMessage
-                                                   socket.Send(serializedResponse, Encoding.UTF8) |> ignore
+                socket.Linger <- System.TimeSpan.FromSeconds 0.1
+                let request = socket.Receive Encoding.UTF8
+                match request with  
+                | null ->
+                    match socket.ReceiveStatus with
+                    | ReceiveStatus.Interrupted -> return ()
+                    | status -> printfn "%A" status
+                                do! startService serialize deserialize killGuid socket
+                | _ -> let deserializedRequest = deserialize request
+                       let! response = handlingPipeline ({ request=deserializedRequest; environment=Map.empty })
+                       let (serializedResponse:string) =
+                           match response with
+                           | Handled s -> Success (s.environment.Item "result")|> serialize 
+                           | _         -> Failure |> serialize
+                       socket.Send(serializedResponse, Encoding.UTF8) |> ignore
+                       do! startService serialize deserialize killGuid socket
             with
             | e -> printfn "%A" e
+                   do! startService serialize deserialize killGuid socket
         }
-
-    let killService killGuid (socket:ZmqSocket) = 
-        socket.Send(killGuid, Encoding.UTF8) |> ignore
-        
 
     let initializeService (context:ZmqContext) endpoint =
         let killGuid = Guid.NewGuid().ToString ()
         
-        let converters : JsonConverter[] = [|UnionConverter<Service.Authentication.Command> ()|]
+        let converters : JsonConverter[] = [|UnionConverter<Result<Object>> (); UnionConverter<Command> ()|]
         
-        context
-        |> Zmq.RequestResponse.responder endpoint
-        |> startService (serialize [||]) (deserialize converters) (killGuid)
+        Zmq.RequestResponse.responder endpoint context
+        |> startService (serialize converters) (deserialize converters) (killGuid)
         |> Async.Start
-//
-//        killService killGuid
 
     [<EntryPoint>]
     let main argv =
