@@ -57,6 +57,11 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Container.Pipeline\Container.Pipeline.fsproj">
+      <Name>Container.Pipeline</Name>
+      <Project>{17c5bfcc-f4cf-46f3-bbfd-67f6e7be35d1}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\samples\Service.Authentication\Service.Authentication.fsproj">
       <Name>Service.Authentication</Name>
       <Project>{38d6b8e0-20ef-4349-b809-01c3ad5a2742}</Project>
@@ -65,11 +70,6 @@
     <ProjectReference Include="..\Serializer.Json\Serializer.Json.fsproj">
       <Name>Serializer.Json</Name>
       <Project>{202cf67b-ee51-4f4a-9c0d-146aa2a176bf}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\ServiceHost.Pipeline\ServiceHost.Pipeline.fsproj">
-      <Name>ServiceHost.Pipeline</Name>
-      <Project>{17c5bfcc-f4cf-46f3-bbfd-67f6e7be35d1}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\Zmq.Common\Zmq.Common.fsproj">

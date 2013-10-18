@@ -4,8 +4,7 @@ open System
 open System.Collections.Generic
 open System.Text
 open ZeroMQ
-open ServiceHost.Pipeline
-open ServiceHost.Pipeline.PipelineExecution
+open Container.Pipeline
 open Service.Authentication
 open Newtonsoft.Json
 open Newtonsoft.Json.FSharp
@@ -14,11 +13,12 @@ open Zmq.RequestResponse
 
 module Service =
     let handlingPipeline pipelineState =
-        async { return Continue pipelineState }
+        pipelineState 
+        |>  Pipeline.start
         ||> Service.Authentication.authenticate
         ||> Service.Authentication.revoke
 
-    let rec private startService serialize deserialize killGuid (socket:ZmqSocket) =
+    let rec private startService serialize deserialize (socket:ZmqSocket) =
         async {
             try
                 socket.Linger <- System.TimeSpan.FromSeconds 0.1
@@ -28,7 +28,7 @@ module Service =
                     match socket.ReceiveStatus with
                     | ReceiveStatus.Interrupted -> return ()
                     | status -> printfn "%A" status
-                                do! startService serialize deserialize killGuid socket
+                                do! startService serialize deserialize socket
                 | _ -> let deserializedRequest = deserialize request
                        let! response = handlingPipeline ({ request=deserializedRequest; environment=Map.empty })
                        let (serializedResponse:string) =
@@ -36,19 +36,17 @@ module Service =
                            | Handled s -> Success (s.environment.Item "result")|> serialize 
                            | _         -> Failure |> serialize
                        socket.Send(serializedResponse, Encoding.UTF8) |> ignore
-                       do! startService serialize deserialize killGuid socket
+                       do! startService serialize deserialize socket
             with
             | e -> printfn "%A" e
-                   do! startService serialize deserialize killGuid socket
+                   do! startService serialize deserialize socket
         }
 
     let initializeService (context:ZmqContext) endpoint =
-        let killGuid = Guid.NewGuid().ToString ()
-        
         let converters : JsonConverter[] = [|UnionConverter<Result<Object>> (); UnionConverter<Command> ()|]
         
         Zmq.RequestResponse.responder endpoint context
-        |> startService (serialize converters) (deserialize converters) (killGuid)
+        |> startService (serialize converters) (deserialize converters)
         |> Async.Start
 
     [<EntryPoint>]

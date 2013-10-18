@@ -48,8 +48,8 @@
     <Compile Include="Authentication.fs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ServiceHost.Pipeline\ServiceHost.Pipeline.fsproj">
-      <Name>ServiceHost.Pipeline</Name>
+    <ProjectReference Include="..\..\Container.Pipeline\Container.Pipeline.fsproj">
+      <Name>Container.Pipeline</Name>
       <Project>{17c5bfcc-f4cf-46f3-bbfd-67f6e7be35d1}</Project>
       <Private>True</Private>
     </ProjectReference>

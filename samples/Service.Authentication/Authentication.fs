@@ -2,7 +2,7 @@
 
 open System
 open System.Text
-open ServiceHost.Pipeline
+open Container.Pipeline
 
 /// Back-end for the Authentication service.
 module Authentication =

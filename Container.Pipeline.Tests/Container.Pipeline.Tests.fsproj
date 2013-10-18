@@ -5,12 +5,12 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>5f8e4927-c2b5-426e-b192-d5360b13188a</ProjectGuid>
+    <ProjectGuid>c8399241-0c81-48c3-ac18-59103eed869a</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Client.Authentication.Tests</RootNamespace>
-    <AssemblyName>Client.Authentication.Tests</AssemblyName>
+    <RootNamespace>Container.Pipeline.Tests</RootNamespace>
+    <AssemblyName>Container.Pipeline.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <Name>Client.Authentication.Tests</Name>
+    <Name>Container.Pipeline.Tests</Name>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
   </PropertyGroup>
@@ -22,7 +22,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\Client.Authentication.Tests.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Container.Pipeline.Tests.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,7 +31,7 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\Client.Authentication.Tests.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\Container.Pipeline.Tests.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
@@ -39,23 +39,16 @@
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets" Condition=" Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <ItemGroup>
-    <Compile Include="SmokeTests.fs" />
+    <Compile Include="Tests.fs" />
     <None Include="packages.config" />
-    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="clrzmq">
-      <HintPath>..\packages\clrzmq.3.0.0-rc1\lib\net40\clrzmq.dll</HintPath>
+    <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>True</Private>
     </Reference>
-    <Reference Include="FSharp.Core, Version=4.3.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-    <Reference Include="mscorlib" />
     <Reference Include="NaturalSpec">
       <HintPath>..\packages\NaturalSpec.1.4.17.1\lib\NaturalSpec.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="nunit.framework">
@@ -67,29 +60,9 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Container.Client\Container.Client.fsproj">
-      <Name>Container.Client</Name>
-      <Project>{66c7161e-3109-4f28-b038-22429ba10be6}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Container.Service\Container.Service.fsproj">
-      <Name>Container.Service</Name>
-      <Project>{3fd4d3a1-e45c-4fe3-b943-70ecf8cef7ba}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\samples\Client.Authentication\Client.Authentication.fsproj">
-      <Name>Client.Authentication</Name>
-      <Project>{cfaeb917-f77c-4071-a379-92a966f11297}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Serializer.Json\Serializer.Json.fsproj">
-      <Name>Serializer.Json</Name>
-      <Project>{202cf67b-ee51-4f4a-9c0d-146aa2a176bf}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Zmq.Common\Zmq.Common.fsproj">
-      <Name>Zmq.Common</Name>
-      <Project>{83f96997-e5e6-4b00-857d-35f7a22e38a2}</Project>
+    <ProjectReference Include="..\Container.Pipeline\Container.Pipeline.fsproj">
+      <Name>Container.Pipeline</Name>
+      <Project>{17c5bfcc-f4cf-46f3-bbfd-67f6e7be35d1}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
