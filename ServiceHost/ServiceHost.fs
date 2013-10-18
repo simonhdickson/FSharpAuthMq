@@ -15,8 +15,8 @@ open Zmq.RequestResponse
 module ServiceHost =
     let handlingPipeline pipelineState =
         async { return Continue pipelineState }
-        |> bind Service.Authentication.authenticate
-        |> bind Service.Authentication.revoke
+        ||> Service.Authentication.authenticate
+        ||> Service.Authentication.revoke
 
     let rec private startService serialize deserialize killGuid (socket:ZmqSocket) =
         async {

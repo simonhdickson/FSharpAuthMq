@@ -19,10 +19,4 @@ module PipelineExecution =
             | Abort state -> return Abort state
         }
     
-//    let (|>=) a b =
-//        a |> bind b
-//
-//    let (|>=?) a b =
-//        match a with
-//        | Success s -> b
-//        | Failure f -> Failure f
+    let (||>) input fn = bind fn input
