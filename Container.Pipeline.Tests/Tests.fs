@@ -1,4 +1,5 @@
 ﻿namespace Container.Pipeline.Tests
+
 open NUnit.Framework
 open NaturalSpec
 open Container
@@ -12,11 +13,21 @@ module Tests =
         async {
             return Handled ({x with environment=(x.environment |> Map.add "result" result )})
         }
-    
+
+    let extractResult state =
+        match state with
+        | Handled s -> (s.environment.Item "result")
+        | _         -> failwith "no result"
+
+    let hasResult state =
+        match state with
+        | Handled s
+        | Continue s    -> (s.environment.ContainsKey "result")
+        | _             -> false
+        
     [<Scenario()>]
     let ``processing without changing state shouldn't change state`` () =
-        let state =  { request=0; environment=Map.empty }
-
+        let state = { request=0; environment=Map.empty }
         let pipelineResult () =
              state
              |>  Pipeline.start 
@@ -31,20 +42,30 @@ module Tests =
 
     [<Scenario()>]
     let ``if a processor returns a result the state should contain it`` () =
-        let state =  { request=0; environment=Map.empty }
-
         let pipelineResult () =
-             state
+             { request=0; environment=Map.empty }
              |>  Pipeline.start 
              ||> thatcherProcessor 1
              |> Async.RunSynchronously
-
-        let extractResult state =
-            match state with
-            | Handled s -> s.environment.Item "result"
-            | Handled s -> 
+             |> extractResult
 
         Given ()
         |> When pipelineResult
-        |> It should equal (Handled state)
+        |> It should equal (1 :> obj)
+        |> Verify
+
+    [<Scenario>]
+    let ``once handled no further processing takes place`` () =
+        let pipelineResult () =
+            { request=0; environment=Map.empty }
+            |> Pipeline.start
+            ||> cleggProcessor
+            ||> blairProcessor
+            ||> thatcherProcessor 1
+            |> Async.RunSynchronously
+            |> hasResult
+
+        Given ()
+        |> When pipelineResult
+        |> It should equal false
         |> Verify
