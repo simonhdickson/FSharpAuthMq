@@ -1,4 +1,4 @@
-﻿namespace Host
+﻿namespace Container
 
 open System
 open System.Collections.Generic
@@ -12,7 +12,7 @@ open Newtonsoft.Json.FSharp
 open Serializer.Json
 open Zmq.RequestResponse
 
-module ServiceHost =
+module Service =
     let handlingPipeline pipelineState =
         async { return Continue pipelineState }
         ||> Service.Authentication.authenticate

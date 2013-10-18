@@ -68,9 +68,14 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClientHost\ClientHost.fsproj">
-      <Name>ClientHost</Name>
+    <ProjectReference Include="..\Container.Client\Container.Client.fsproj">
+      <Name>Container.Client</Name>
       <Project>{66c7161e-3109-4f28-b038-22429ba10be6}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Container.Service\Container.Service.fsproj">
+      <Name>Container.Service</Name>
+      <Project>{3fd4d3a1-e45c-4fe3-b943-70ecf8cef7ba}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\samples\Client.Authentication\Client.Authentication.fsproj">
@@ -81,11 +86,6 @@
     <ProjectReference Include="..\Serializer.Json\Serializer.Json.fsproj">
       <Name>Serializer.Json</Name>
       <Project>{202cf67b-ee51-4f4a-9c0d-146aa2a176bf}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\ServiceHost\ServiceHost.fsproj">
-      <Name>ServiceHost</Name>
-      <Project>{3fd4d3a1-e45c-4fe3-b943-70ecf8cef7ba}</Project>
       <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\Zmq.Common\Zmq.Common.fsproj">

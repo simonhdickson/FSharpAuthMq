@@ -2,10 +2,10 @@
 open NUnit.Framework
 open NaturalSpec
 open Client.Authentication
-open Host.Client
+open Container
+open Container.Client
 open ZeroMQ
 open Zmq.RequestResponse
-open Host
 open Serializer.Json
 open Newtonsoft.Json
 open Newtonsoft.Json.FSharp
@@ -15,7 +15,7 @@ module SmokeTests =
 
     let startUpService () = 
         let context = ZmqContext.Create ()
-        ServiceHost.initializeService context endpoint 
+        Service.initializeService context endpoint 
         let converters : JsonConverter[] = [|UnionConverter<Result<bool>> (); UnionConverter<Command> ()|]
         let client = Client.createRequester (serialize converters) (deserialize converters) (Some context) endpoint
         client

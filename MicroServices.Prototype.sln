@@ -20,13 +20,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "serializers", "serializers"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Serializer.Json", "Serializer.Json\Serializer.Json.fsproj", "{202CF67B-EE51-4F4A-9C0D-146AA2A176BF}"
 EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ServiceHost", "ServiceHost\ServiceHost.fsproj", "{3FD4D3A1-E45C-4FE3-B943-70ECF8CEF7BA}"
-EndProject
-Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ClientHost", "ClientHost\ClientHost.fsproj", "{66C7161E-3109-4F28-B038-22429BA10BE6}"
-EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Client.Authentication.Tests", "Client.Authentication.Tests\Client.Authentication.Tests.fsproj", "{5F8E4927-C2B5-426E-B192-D5360B13188A}"
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ServiceHost.Pipeline", "ServiceHost.Pipeline\ServiceHost.Pipeline.fsproj", "{17C5BFCC-F4CF-46F3-BBFD-67F6E7BE35D1}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Container.Service", "Container.Service\Container.Service.fsproj", "{3FD4D3A1-E45C-4FE3-B943-70ECF8CEF7BA}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "Container.Client", "Container.Client\Container.Client.fsproj", "{66C7161E-3109-4F28-B038-22429BA10BE6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,14 +50,6 @@ Global
 		{202CF67B-EE51-4F4A-9C0D-146AA2A176BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{202CF67B-EE51-4F4A-9C0D-146AA2A176BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{202CF67B-EE51-4F4A-9C0D-146AA2A176BF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3FD4D3A1-E45C-4FE3-B943-70ECF8CEF7BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3FD4D3A1-E45C-4FE3-B943-70ECF8CEF7BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3FD4D3A1-E45C-4FE3-B943-70ECF8CEF7BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3FD4D3A1-E45C-4FE3-B943-70ECF8CEF7BA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{66C7161E-3109-4F28-B038-22429BA10BE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{66C7161E-3109-4F28-B038-22429BA10BE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{66C7161E-3109-4F28-B038-22429BA10BE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{66C7161E-3109-4F28-B038-22429BA10BE6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5F8E4927-C2B5-426E-B192-D5360B13188A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5F8E4927-C2B5-426E-B192-D5360B13188A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F8E4927-C2B5-426E-B192-D5360B13188A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -66,6 +58,14 @@ Global
 		{17C5BFCC-F4CF-46F3-BBFD-67F6E7BE35D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{17C5BFCC-F4CF-46F3-BBFD-67F6E7BE35D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{17C5BFCC-F4CF-46F3-BBFD-67F6E7BE35D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FD4D3A1-E45C-4FE3-B943-70ECF8CEF7BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FD4D3A1-E45C-4FE3-B943-70ECF8CEF7BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FD4D3A1-E45C-4FE3-B943-70ECF8CEF7BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FD4D3A1-E45C-4FE3-B943-70ECF8CEF7BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66C7161E-3109-4F28-B038-22429BA10BE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66C7161E-3109-4F28-B038-22429BA10BE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66C7161E-3109-4F28-B038-22429BA10BE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66C7161E-3109-4F28-B038-22429BA10BE6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

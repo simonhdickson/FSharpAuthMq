@@ -1,4 +1,4 @@
-﻿namespace Host
+﻿namespace Container
 open System
 open System.Text
 open ZeroMQ
