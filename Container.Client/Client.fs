@@ -6,6 +6,7 @@ open Client.Authentication
 open Zmq.RequestResponse
   
 module Client =
+    [<NoComparison>]
     type Operation<'msg, 'res> =
       | Send of 'msg * AsyncReplyChannel<'res> * TimeSpan
       | Kill

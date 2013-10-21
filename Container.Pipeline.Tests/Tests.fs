@@ -31,8 +31,8 @@ module Tests =
         let pipelineResult () =
              state
              |>  Pipeline.start 
-             ||> cleggProcessor 
-             ||> blairProcessor
+             >>= cleggProcessor 
+             >>= blairProcessor
              |> Async.RunSynchronously
 
         Given ()
@@ -45,7 +45,7 @@ module Tests =
         let pipelineResult () =
              { request=0; environment=Map.empty }
              |>  Pipeline.start 
-             ||> thatcherProcessor 1
+             >>= thatcherProcessor 1
              |> Async.RunSynchronously
              |> extractResult
 
@@ -59,9 +59,9 @@ module Tests =
         let pipelineResult () =
             { request=0; environment=Map.empty }
             |> Pipeline.start
-            ||> cleggProcessor
-            ||> blairProcessor
-            ||> thatcherProcessor 1
+            >>= cleggProcessor
+            >>= blairProcessor
+            >>= thatcherProcessor 1
             |> Async.RunSynchronously
             |> hasResult
 

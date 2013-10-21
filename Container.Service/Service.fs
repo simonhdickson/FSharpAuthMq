@@ -15,8 +15,8 @@ module Service =
     let handlingPipeline pipelineState =
         pipelineState 
         |>  Pipeline.start
-        ||> Service.Authentication.authenticate
-        ||> Service.Authentication.revoke
+        >>= Service.Authentication.authenticate
+        >>= Service.Authentication.revoke
 
     let rec private startService serialize deserialize (socket:ZmqSocket) =
         async {
@@ -24,19 +24,18 @@ module Service =
                 socket.Linger <- System.TimeSpan.FromSeconds 0.1
                 let request = socket.Receive Encoding.UTF8
                 match request with  
-                | null ->
-                    match socket.ReceiveStatus with
-                    | ReceiveStatus.Interrupted -> return ()
-                    | status -> printfn "%A" status
-                                do! startService serialize deserialize socket
-                | _ -> let deserializedRequest = deserialize request
-                       let! response = handlingPipeline ({ request=deserializedRequest; environment=Map.empty })
-                       let (serializedResponse:string) =
-                           match response with
-                           | Handled s -> Success (s.environment.Item "result")|> serialize 
-                           | _         -> Failure |> serialize
-                       socket.Send(serializedResponse, Encoding.UTF8) |> ignore
-                       do! startService serialize deserialize socket
+                | null  -> match socket.ReceiveStatus with
+                           | ReceiveStatus.Interrupted -> return ()
+                           | status                    -> printfn "%A" status
+                                                          do! startService serialize deserialize socket
+                | _     -> let deserializedRequest = deserialize request
+                           let! response = handlingPipeline ({ request=deserializedRequest; environment=Map.empty })
+                           let (serializedResponse:string) =
+                               match response with
+                               | Handled s -> Success (s.environment.Item "result")|> serialize 
+                               | _         -> Failure |> serialize
+                           socket.Send(serializedResponse, Encoding.UTF8) |> ignore
+                           do! startService serialize deserialize socket
             with
             | e -> printfn "%A" e
                    do! startService serialize deserialize socket
